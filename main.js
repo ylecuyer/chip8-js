@@ -317,12 +317,14 @@ function OpDxyn_drw(Vx, Vy, n) {
 
 function OpEx9E_skp(Vx) {
 	//console.log("OpEx9E_skp(V" + Vx.toString(16) + ")");
-	console.log("TODO");//TODO skip next instruction if the key Vx is pressed
+	if (keyboard[register.V[Vx]] == 1)
+		PC += 0x2;
 }
 
 function OpExA1_sknp(Vx) {
 	//console.log("OpExA1_sknp(V" + Vx.toString(16) + ")");
-	console.log("TODO");//TODO skip next instruction if the key Vx is not pressed
+	if (keyboard[register.V[Vx]] == 0)
+		PC += 0x2;
 }
 
 function OpFx07_ld(Vx) {
