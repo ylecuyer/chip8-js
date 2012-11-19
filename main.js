@@ -1,3 +1,4 @@
+var DEBUG = false;
 
 var ROM_buffer = null;
 var ROM = null;
@@ -26,9 +27,16 @@ var STACK_buffer = new ArrayBuffer(32);
 var STACK = new Uint16Array(STACK_buffer);
 
 var keyboard = new Array(16);
+for (var i = 0; i < 16; i++)
+	keyboard[i] = 0;
+
+var wait_for_keypress =  false;
+var register_for_keypress = null;
 
 //64*32 = 2048
 var display = new Array(2048);
+for (var i = 0; i < 64*32; i++)
+	display[i] = 0;
 
 //0
 MEM[0x000] = 0xF0; //****
@@ -162,138 +170,162 @@ function decrease_ST() {
 var OpCode = 0x0000;
 
 function Op0nnn_sys(addr) {
-	//console.log("Op0nnn_sys(" + addr.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op0nnn_sys(" + addr.toString(16) + ")");
 	//STACK[SP] = PC;
 	//SP--;
 	//PC = addr;
 }
 
 function Op00E0_cls() {
-	//console.log("Op00E0_cls()");
+	if (DEBUG)
+		console.log("Op00E0_cls()");
 	for (var i = 0; i < 64*32; i++) 
 		display[i] = 0; //TODO check if it its really 0		
 }
 
 function Op00EE_ret() {
-	//console.log("Op00EE_ret()");
+	if (DEBUG)
+		console.log("Op00EE_ret()");
 	SP++;
 	PC = STACK[SP];	
 }
 
 function Op1nnn_jp(addr) {
-	//console.log("Op1nnn_jp(" + addr.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op1nnn_jp(" + addr.toString(16) + ")");
 	PC = addr;
 }
 
 function Op2nnn_call(addr) {
-	//console.log("Op2nnn_call(" + addr.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op2nnn_call(" + addr.toString(16) + ")");
 	STACK[SP] = PC;
 	SP--;
 	PC = addr;
 }
 
 function Op3xkk_se(Vx, kk) {
-	//console.log("Op3xkk_se(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op3xkk_se(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
 	if (register.V[Vx] == kk)
 		PC += 0x2;
 }
 
 function Op4xkk_sne(Vx, kk) {
-	//console.log("Op4xkk_sne(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op4xkk_sne(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
 	if (register.V[Vx] != kk)
 		PC += 0x2;
 }
 
 function Op5xy0_se(Vx, Vy) {
-	//console.log("Op5xy0_se(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op5xy0_se(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	if (register.V[Vx] == register.V[Vy])
 		PC += 0x2;
 }
 
 function Op6xkk_ld(Vx, kk) {
-	//console.log("Op6xkk_ld(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op6xkk_ld(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
 	register.V[Vx] = kk;
 }
 
 function Op7xkk_add(Vx, kk) {
-	//console.log("Op7xkk_add(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op7xkk_add(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
 	register.V[Vx] += kk;//TODO check carry
 }
 
 function Op8xy0_ld(Vx, Vy) {
-	//console.log("Op8xy0_ld(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy0_ld(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[Vx] = register.V[Vy];
 }
 
 function Op8xy1_or(Vx, Vy) {
-	//console.log("Op8xy1_or(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy1_or(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[Vx] |= register.V[Vy];
 }
 
 function Op8xy2_and(Vx, Vy) {
-	//console.log("Op8xy2_and(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy2_and(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[Vx] &= register.V[Vy];
 }
 
 function Op8xy3_xor(Vx, Vy) {
-	//console.log("Op8xy3_xor(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy3_xor(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[Vx] ^= register.V[Vy];
 }
 
 function Op8xy4_add(Vx, Vy) {
-	//console.log("Op8xy4_add(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy4_add(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	var temp =  register.V[Vx] + register.V[Vy];
 	register.V[0xF] = (temp > 255)?1:0;
 	register.V[Vx] = (temp & 0xFF);
 }
 
 function Op8xy5_sub(Vx, Vy) {
-	//console.log("Op8xy5_sub(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy5_sub(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[0xF] = (register.V[Vx] > register.V[Vy])?1:0;
 	register.V[Vx] = (register.V[Vx] - register.V[Vy]);//TODO check if & 0xFF is needed
 }
 
 function Op8xy6_shr(Vx, Vy) {
-	//console.log("Op8xy6_shr(V" + Vx.toString(16) + "{, V" + Vy.toString(16) + "})");
+	if (DEBUG)
+		console.log("Op8xy6_shr(V" + Vx.toString(16) + "{, V" + Vy.toString(16) + "})");
 	register.V[0xF] = register.V[Vx] & 0x1;
 	register.V[Vx] >>= 1;//TODO check why Vy is not used
 }
 
 function Op8xy7_subn(Vx, Vy) {
-	//console.log("Op8xy7_subn(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op8xy7_subn(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[0xF] = (register.V[Vy] > register.V[Vx])?1:0;
 	register.V[Vx] = (register.V[Vy] - register.V[Vx]);//TODO check if & 0xFF is needed
 }
 
 function Op8xyE_shl(Vx, Vy) {
-	//console.log("Op8xy6_shr(V" + Vx.toString(16) + "{, V" + Vy.toString(16) + "})");
+	if (DEBUG)
+		console.log("Op8xy6_shr(V" + Vx.toString(16) + "{, V" + Vy.toString(16) + "})");
 	register.V[0xF] = register.V[Vx] & 0x80;
 	register.V[Vx] <<= 1;//TODO check why Vy is not used
 }
 
 function Op9xy0_sne(Vx, Vy) {
-	//console.log("Op9xy0_sne(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
+	if (DEBUG)
+		console.log("Op9xy0_sne(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	if (register.V[Vx] != register.V[Vy])
 		PC += 0x2;
 }
 
 function OpAnnn_ld(addr) {
-	//console.log("OpAnnn_ld(" + addr.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpAnnn_ld(" + addr.toString(16) + ")");
 	register.I = addr;
 }
 
 function OpBnnn_jp(addr) {
-	//console.log("OpBnnn_jp(" + addr.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpBnnn_jp(" + addr.toString(16) + ")");
 	PC += (addr + register.V[0]);
 }
 
 function OpCxkk_rnd(Vx, kk) {
-	//console.log("OpCxkk_rnd(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpCxkk_rnd(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
 	register.V[Vx] = (Math.floor(Math.random()*256)) & kk;
 }
 
 function OpDxyn_drw(Vx, Vy, n) {
-	//console.log("OpDxyn_drw(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ", " + n + ")");
+	if (DEBUG)
+		console.log("OpDxyn_drw(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ", " + n + ")");
 
 	register.V[0xF] = 0;
 	var x = register.V[Vx];
@@ -316,47 +348,59 @@ function OpDxyn_drw(Vx, Vy, n) {
 }
 
 function OpEx9E_skp(Vx) {
-	//console.log("OpEx9E_skp(V" + Vx.toString(16) + ")");
-	console.log("TODO");//TODO skip next instruction if the key Vx is pressed
+	if (DEBUG)
+		console.log("OpEx9E_skp(V" + Vx.toString(16) + ")");
+	if (keyboard[register.V[Vx]] == 1)
+		PC += 0x2;
 }
 
 function OpExA1_sknp(Vx) {
-	//console.log("OpExA1_sknp(V" + Vx.toString(16) + ")");
-	console.log("TODO");//TODO skip next instruction if the key Vx is not pressed
+	if (DEBUG)
+		console.log("OpExA1_sknp(V" + Vx.toString(16) + ")");
+	if (keyboard[register.V[Vx]] == 0)
+		PC += 0x2;
 }
 
 function OpFx07_ld(Vx) {
-	//console.log("OpFx07_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx07_ld(V" + Vx.toString(16) + ")");
 	register.V[Vx] = register.DT;
 }
 
 function OpFx0A_ld(Vx) {
-	//console.log("OpFx0A_ld(V" + Vx.toString(16) + ")");
-	console.log("TODO");//TODO wait for a key press
+	if (DEBUG)
+		console.log("OpFx0A_ld(V" + Vx.toString(16) + ")");
+	wait_for_keypress = true;
+	register_for_keypress = Vx;
 }	
 
 function OpFx15_ld(Vx) {
-	//console.log("OpFx15_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx15_ld(V" + Vx.toString(16) + ")");
 	register.DT = register.V[Vx];
 }	
 
 function OpFx18_ld(Vx) {
-	//console.log("OpFx18_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx18_ld(V" + Vx.toString(16) + ")");
 	register.ST = register.V[Vx];
 }	
 
 function OpFx1E_add(Vx) {
-	//console.log("OpFx1E_add(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx1E_add(V" + Vx.toString(16) + ")");
 	register.I += register.V[Vx];//TODO check carry
 }
 
 function OpFx29_ld(Vx) {
-	//console.log("OpFx29_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx29_ld(V" + Vx.toString(16) + ")");
 	register.I = register.V[Vx] * 0x5;
 }
 
 function OpFx33_ld(Vx) {
-	//console.log("OpFx33_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx33_ld(V" + Vx.toString(16) + ")");
 	temp = register.V[Vx];
 	for (var i = 0; i < 3; i++) {
 		MEM[register.I + 2 - i] = (temp % 10);
@@ -365,13 +409,15 @@ function OpFx33_ld(Vx) {
 }
 
 function OpFx55_ld(Vx) {
-	//console.log("OpFx55_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx55_ld(V" + Vx.toString(16) + ")");
 	for (var i = 0; i <= Vx; i++)
 		MEM[register.I + i] = register.V[i]; //TODO check if I needs to be incremented
 }
 
 function OpFx65_ld(Vx) {
-	//console.log("OpFx65_ld(V" + Vx.toString(16) + ")");
+	if (DEBUG)
+		console.log("OpFx65_ld(V" + Vx.toString(16) + ")");
 	for (var i = 0; i <= Vx; i++)
 		register.V[i] = MEM[register.I + i];
 }
@@ -729,8 +775,13 @@ function process_opcode() {
 			break;
 	}	
 
+	console.log(PC);
+	console.log(SP);
+	console.log(STACK);
+	console.log(register);
 
-	cpu_process = setTimeout(process_opcode, 1);
+	if (wait_for_keypress != true)
+		cpu_process = setTimeout(process_opcode, 1);
 }
 
 
@@ -759,6 +810,158 @@ $(function() {
 		clearTimeout(draw_process);
 		clearTimeout(dt_process);
 		clearTimeout(st_process);
+	});
+	
+	$(document).keydown(function(event) {
+
+		var mapped_key = null;
+
+		switch (event.keyCode) {
+
+			case 222:
+				mapped_key = 0x1;
+				break;
+
+			case 57:
+				mapped_key = 0x2;
+				break;
+
+			case 189:
+				mapped_key = 0x3;
+				break;
+
+			case 55:
+				mapped_key = 0xC;
+				break;
+
+			case 82:
+				mapped_key = 0x4;
+				break;
+
+			case 84:
+				mapped_key = 0x5;
+				break;
+
+			case 89:
+				mapped_key = 0x6;
+				break;
+
+			case 85:
+				mapped_key = 0xD;
+				break;
+
+			case 70:
+				mapped_key = 0x7;
+				break;
+
+			case 71:
+				mapped_key = 0x8;
+				break;
+
+			case 72:
+				mapped_key = 0x9;
+				break;
+
+			case 74:
+				mapped_key = 0xE;
+				break;
+
+			case 86:
+				mapped_key = 0xA;
+				break;
+
+			case 66:
+				mapped_key = 0x0;
+				break;
+
+			case 78:
+				mapped_key = 0xB;
+				break;
+
+			case 188:
+				mapped_key = 0xF;
+				break;
+		}
+		
+		keyboard[mapped_key] = 1;
+		
+		if (wait_for_keypress) {
+			wait_for_keypress = false;
+			register.V[register_for_keypress] = mapped_key;
+			cpu_process = setTimeout(process_opcode, 1);
+		}	
+
+	});
+
+	$(document).keyup(function(event) {
+
+		switch (event.keyCode) {
+
+			case 222:
+				keyboard[0x1] = 0;
+				break;
+
+			case 57:
+				keyboard[0x2] = 0;
+				break;
+
+			case 189:
+				keyboard[0x3] = 0;
+				break;
+
+			case 55:
+				keyboard[0xC] = 0;
+				break;
+
+			case 82:
+				keyboard[0x4] = 0;
+				break;
+
+			case 84:
+				keyboard[0x5] = 0;
+				break;
+
+			case 89:
+				keyboard[0x6] = 0;
+				break;
+
+			case 85:
+				keyboard[0xD] = 0;
+				break;
+
+			case 70:
+				keyboard[0x7] = 0;
+				break;
+
+			case 71:
+				keyboard[0x8] = 0;
+				break;
+
+			case 72:
+				keyboard[0x9] = 0;
+				break;
+
+			case 74:
+				keyboard[0xE] = 0;
+				break;
+
+			case 86:
+				keyboard[0xA] = 0;
+				break;
+
+			case 66:
+				keyboard[0x0] = 0;
+				break;
+
+			case 78:
+				keyboard[0xB] = 0;
+				break;
+
+			case 188:
+				keyboard[0xF] = 0;
+				break;
+		}
+
 	});
 });
 
