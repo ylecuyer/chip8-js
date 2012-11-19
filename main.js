@@ -26,11 +26,16 @@ var STACK_buffer = new ArrayBuffer(32);
 var STACK = new Uint16Array(STACK_buffer);
 
 var keyboard = new Array(16);
+for (var i = 0; i < 16; i++)
+	keyboard[i] = 0;
+
 var wait_for_keypress =  false;
 var register_for_keypress = null;
 
 //64*32 = 2048
 var display = new Array(2048);
+for (var i = 0; i < 64*32; i++)
+	display[i] = 0;
 
 //0
 MEM[0x000] = 0xF0; //****
@@ -814,7 +819,7 @@ $(function() {
 
 			case 106:
 				mapped_key = 0x9;
-				break,
+				break;
 
 			case 107:
 				mapped_key = 0xE;
@@ -893,7 +898,7 @@ $(function() {
 
 			case 106:
 				keyboard[0x9] = 0;
-				break,
+				break;
 
 			case 107:
 				keyboard[0xE] = 0;
