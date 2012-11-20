@@ -425,6 +425,20 @@ function OpFx65_ld(Vx) {
 var stop = false;
 var screen = null;
 
+function init_chip8() {
+
+	PC = 0x200; //Chip8 programs begin at 0x200
+	
+	SP = 0xF; //Stack pointer at the top of the stack
+	
+
+	for (var i = 0; i < 64; i++) {
+		for (var j = 0; j < 32; j++) {
+			display[i + j*64] = 0;
+		}
+	}
+}
+
 function init() {
 
 	screen = $("#screen");
@@ -442,15 +456,7 @@ function init() {
 	
 
 	
-
-	PC = 0x200; //Chip8 programs begin at 0x200
-	SP = 0xF; //Stack pointer at the top of the stack
-
-	for (var i = 0; i < 64; i++) {
-		for (var j = 0; j < 32; j++) {
-			display[i + j*64] = 0;
-		}
-	}
+	init_chip8();
 
 	//Copy ROM inside the memory
 	
@@ -499,7 +505,7 @@ function run() {
 	st_process = setTimeout(decrease_ST, fps60);
 
 	//console.log("PC = 0x" + PC.toString(16));
-	process_opcode();
+	process_opcode_ex();
 	draw();
 
 
@@ -775,15 +781,21 @@ function process_opcode() {
 			break;
 	}	
 
+}
+
+function process_opcode_ex() {
+
+	process_opcode();
+
 	console.log(PC);
 	console.log(SP);
 	console.log(STACK);
 	console.log(register);
 
 	if (wait_for_keypress != true)
-		cpu_process = setTimeout(process_opcode, 1);
-}
+		cpu_process = setTimeout(process_opcode_ex, 1);
 
+}
 
 $(function() {
 
@@ -888,7 +900,7 @@ $(function() {
 		if (wait_for_keypress) {
 			wait_for_keypress = false;
 			register.V[register_for_keypress] = mapped_key;
-			cpu_process = setTimeout(process_opcode, 1);
+			cpu_process = setTimeout(process_opcode_ex, 1);
 		}	
 
 	});
