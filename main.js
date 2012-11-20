@@ -427,16 +427,40 @@ var screen = null;
 
 function init_chip8() {
 
+	if (DEBUG)
+		console.log("Init chip8");
+
 	PC = 0x200; //Chip8 programs begin at 0x200
 	
 	SP = 0xF; //Stack pointer at the top of the stack
 	
-
+	//Clear Screen
 	for (var i = 0; i < 64; i++) {
 		for (var j = 0; j < 32; j++) {
 			display[i + j*64] = 0;
 		}
 	}
+
+	//Clear Memory
+	for (var i = 0; i <= 0xFFF; i++)
+		MEM[i] = 0;
+
+
+	//Clear registers
+	for (i = 0; i <= 0xF; i++)
+		register.V[i] = 0;
+	register.I  = 0;
+	register.DT = 0;
+	register.ST = 0;
+
+
+	//Clear STACK
+	for (i = 0; i <= 0xF; i++)
+		STACK[i] = 0;
+
+	//Clear keyboard
+	for (i = 0; i <= 0xF; i++)
+		keyboard[i] = 0;
 }
 
 function init() {
@@ -505,7 +529,7 @@ function run() {
 	st_process = setTimeout(decrease_ST, fps60);
 
 	//console.log("PC = 0x" + PC.toString(16));
-	process_opcode_ex();
+	process_opcode_ext();
 	draw();
 
 
@@ -535,14 +559,15 @@ function draw() {
 
 function process_opcode() {
 
-	OpCode = (MEM[PC] << 8) + (MEM[PC+0x1]);
+	var OpCode = (MEM[PC] << 8) + (MEM[PC+0x1]);
 
-	Op1 = (OpCode & 0xF000) >> 12;
-	Op2 = (OpCode & 0x0F00) >> 8;
-	Op3 = (OpCode & 0x00F0) >> 4;
-	Op4 = (OpCode & 0x000F) >> 0;
+	var Op1 = (OpCode & 0xF000) >> 12;
+	var Op2 = (OpCode & 0x0F00) >> 8;
+	var Op3 = (OpCode & 0x00F0) >> 4;
+	var Op4 = (OpCode & 0x000F) >> 0;
 
-	//console.log(OpCode.toString(16));
+	if (DEBUG)
+		console.log("Process Opcode : " + OpCode.toString(16));
 
 	PC += 0x2;
 
