@@ -1,53 +1,90 @@
+function process_n_opcodes(n) {
+
+	for (var i = 0; i < n; i++)
+		process_opcode();
+
+}
+
+function load_custom_ROM(opcodes) {
+	
+	var nb_opcodes = opcodes.length;
+	for (var i = 0; i < nb_opcodes; i++) {
+		MEM[0x200 + i*0x2]     = (opcodes[i] & 0xFF00) >> 8;
+		MEM[0x200 + i*0x2 + 1] = (opcodes[i] & 0x00FF);
+	}
+
+}
+
+function check_stack(to_be_checked) {
+
+	equal(STACK[0x0], (to_be_checked && to_be_checked.S0) || 0, "Stack [0x0]");
+	equal(STACK[0x1], (to_be_checked && to_be_checked.S1) || 0, "Stack [0x1]");
+	equal(STACK[0x2], (to_be_checked && to_be_checked.S2) || 0, "Stack [0x2]");
+	equal(STACK[0x3], (to_be_checked && to_be_checked.S3) || 0, "Stack [0x3]");
+	equal(STACK[0x4], (to_be_checked && to_be_checked.S4) || 0, "Stack [0x4]");
+	equal(STACK[0x5], (to_be_checked && to_be_checked.S5) || 0, "Stack [0x5]");
+	equal(STACK[0x6], (to_be_checked && to_be_checked.S6) || 0, "Stack [0x6]");
+	equal(STACK[0x7], (to_be_checked && to_be_checked.S7) || 0, "Stack [0x7]");
+	equal(STACK[0x8], (to_be_checked && to_be_checked.S8) || 0, "Stack [0x8]");
+	equal(STACK[0x9], (to_be_checked && to_be_checked.S9) || 0, "Stack [0x9]");
+	equal(STACK[0xA], (to_be_checked && to_be_checked.SA) || 0, "Stack [0xA]");
+	equal(STACK[0xB], (to_be_checked && to_be_checked.SB) || 0, "Stack [0xB]");
+	equal(STACK[0xC], (to_be_checked && to_be_checked.SC) || 0, "Stack [0xC]");
+	equal(STACK[0xD], (to_be_checked && to_be_checked.SD) || 0, "Stack [0xD]");
+	equal(STACK[0xE], (to_be_checked && to_be_checked.SE) || 0, "Stack [0xE]");
+	equal(STACK[0xF], (to_be_checked && to_be_checked.SF) || 0, "Stack [0xF]");
+
+}
 
 function check_chip8(to_be_checked) {
 
-	
-	equal(PC, (to_be_checked && to_be_checked.PC) || 0x200, "Program Counter OK");
-	equal(SP, (to_be_checked && to_be_checked.SP) || 0xF, "Stack Pointer OK");
+	equal(PC, (to_be_checked && to_be_checked.PC) || 0x200, "Program Counter");
+	equal(SP, (to_be_checked && to_be_checked.SP) || 0xF, "Stack Pointer");
 
-	equal(register.I, (to_be_checked && to_be_checked.I) || 0, "Register I OK");
+	equal(register.I, (to_be_checked && to_be_checked.I) || 0, "Register I");
 		
-	equal(register.V[0x0], (to_be_checked && to_be_checked.V0) || 0, "Register V0 OK");
-	equal(register.V[0x1], (to_be_checked && to_be_checked.V1) || 0, "Register V1 OK");
-	equal(register.V[0x2], (to_be_checked && to_be_checked.V2) || 0, "Register V2 OK");
-	equal(register.V[0x3], (to_be_checked && to_be_checked.V3) || 0, "Register V3 OK");
-	equal(register.V[0x4], (to_be_checked && to_be_checked.V4) || 0, "Register V4 OK");
-	equal(register.V[0x5], (to_be_checked && to_be_checked.V5) || 0, "Register V5 OK");
-	equal(register.V[0x6], (to_be_checked && to_be_checked.V6) || 0, "Register V6 OK");
-	equal(register.V[0x7], (to_be_checked && to_be_checked.V7) || 0, "Register V7 OK");
-	equal(register.V[0x8], (to_be_checked && to_be_checked.V8) || 0, "Register V8 OK");
-	equal(register.V[0x9], (to_be_checked && to_be_checked.V8) || 0, "Register V9 OK");
-	equal(register.V[0xA], (to_be_checked && to_be_checked.VA) || 0, "Register VA OK");
-	equal(register.V[0xB], (to_be_checked && to_be_checked.VB) || 0, "Register VB OK");
-	equal(register.V[0xC], (to_be_checked && to_be_checked.VC) || 0, "Register VC OK");
-	equal(register.V[0xD], (to_be_checked && to_be_checked.VD) || 0, "Register VD OK");
-	equal(register.V[0xE], (to_be_checked && to_be_checked.VE) || 0, "Register VE OK");
-	equal(register.V[0xF], (to_be_checked && to_be_checked.VF) || 0, "Register VF OK");
+	equal(register.V[0x0], (to_be_checked && to_be_checked.V0) || 0, "Register V0");
+	equal(register.V[0x1], (to_be_checked && to_be_checked.V1) || 0, "Register V1");
+	equal(register.V[0x2], (to_be_checked && to_be_checked.V2) || 0, "Register V2");
+	equal(register.V[0x3], (to_be_checked && to_be_checked.V3) || 0, "Register V3");
+	equal(register.V[0x4], (to_be_checked && to_be_checked.V4) || 0, "Register V4");
+	equal(register.V[0x5], (to_be_checked && to_be_checked.V5) || 0, "Register V5");
+	equal(register.V[0x6], (to_be_checked && to_be_checked.V6) || 0, "Register V6");
+	equal(register.V[0x7], (to_be_checked && to_be_checked.V7) || 0, "Register V7");
+	equal(register.V[0x8], (to_be_checked && to_be_checked.V8) || 0, "Register V8");
+	equal(register.V[0x9], (to_be_checked && to_be_checked.V8) || 0, "Register V9");
+	equal(register.V[0xA], (to_be_checked && to_be_checked.VA) || 0, "Register VA");
+	equal(register.V[0xB], (to_be_checked && to_be_checked.VB) || 0, "Register VB");
+	equal(register.V[0xC], (to_be_checked && to_be_checked.VC) || 0, "Register VC");
+	equal(register.V[0xD], (to_be_checked && to_be_checked.VD) || 0, "Register VD");
+	equal(register.V[0xE], (to_be_checked && to_be_checked.VE) || 0, "Register VE");
+	equal(register.V[0xF], (to_be_checked && to_be_checked.VF) || 0, "Register VF");
 
-	equal(DT, (to_be_checked && to_be_checked.DT) || 0, "Delay Timer OK");
-	equal(ST, (to_be_checked && to_be_checked.ST) || 0, "Sound Timer OK");
+	equal(register.DT, (to_be_checked && to_be_checked.DT) || 0, "Delay Timer");
+	equal(register.ST, (to_be_checked && to_be_checked.ST) || 0, "Sound Timer");
 }
 
 test("Chip8 initialization", function() {
 
-	expect(2);
-
 	init_chip8();
 
-	equal(PC, 0x200, "Program Counter OK");
-	equal(SP, 0xF, "Stack Pointer OK");
+	check_stack();
+
+	check_chip8();
 
 });
 
 
 test("OpCode 00E0 - CLS", function() {
 
+	init_chip8();
+	
 	//Fill screen with pixels
 	for (var i = 0; i < 64*32; i++)
 		display[i] = 1;
 
-	//OpCode 00E0 - CLS
-	Op00E0_cls();
+	load_custom_ROM([0x00E0]);
+	process_opcode();
 
 	//Check if the screen as been cleared
 	var clean = true;
@@ -55,88 +92,135 @@ test("OpCode 00E0 - CLS", function() {
 		if (display[i] != 0) 
 			clean = false;
 
-	ok(clean, "Screen cleared successfully");
+	ok(clean, "Screen cleared");
+	
+	check_stack();
+
+	check_chip8({PC: 0x202});
 
 });
 
 test("OpCode 00EE - RET", function() {
 
 	init_chip8();
-	
-	PC += 0x2;	
-	Op2nnn_call(0x202);//Call 0x202
-	
-	PC += 0x2;
-	Op6xkk_ld(0,1);//Set V0 = 1
 
-	PC += 0x2;	
-	Op00EE_ret();
+	load_custom_ROM([0x2206, 0x6A34, 0x6345, 0x6321, 0x00EE]);
 	
-	equal(PC, 0x202, "Program Counter OK");
-	equal(SP, 0xF, "Stack Pointer OK");
+	process_n_opcodes(5);
+	
+	check_stack({SF: 0x202});	
+
+	check_chip8({PC: 0x206, SP: 0xF, VA: 0x34, V3: 0x45});
 });
 
 test("OpCode 1nnn - JP addr", function() {
 
 	init_chip8();
 
-	PC += 0x2;
-	Op1nnn_jp(0x345);
+	load_custom_ROM([0x1204, 0x6A34, 0x6345, 0x6A21, 0x00E0]);
 
-	equal(PC, 0x345, "Program Counter OK");
-	equal(SP, 0xF, "Stack Pointer OK");
+	process_n_opcodes(3);
+
+	check_stack();
+		
+	check_chip8({V3: 0x45, VA: 0x21, PC: 0x208});
+
 });
 
 test("OpCode 2nnn - CALL addr", function() {
 
 	init_chip8();
+	
+	load_custom_ROM([0x2204, 0x6A34, 0x6345, 0x6321, 0x00EE]);
+	
+	process_n_opcodes(3);
+	
+	check_stack({SF: 0x202});	
 
-	PC += 0x2;
-	Op2nnn_call(0x324);
-
-	equal(PC, 0x324, "Program Counter OK");
-	equal(SP, 0xE, "Stack Pointer OK");
-	equal(STACK[0xF], 0x202, "Stack OK");
+	check_chip8({PC: 0x208, SP: 0xE, V3: 0x21});
 });
 
 test("OpCode 3xkk - SE Vx, byte", function() {
 
+	//Cas Vx != kk
+
 	init_chip8();
 
-	register.V[0xA] = 0x6A;
-	
-	PC += 0x2;
-	Op3xkk_se(0xA, 0x6A);
+	load_custom_ROM([0x6AAF, 0x3AAA, 0x6054, 0x6345]);
 
-	equal(PC, 0x204, "Program Counter OK");
+	process_n_opcodes(3);
+
+	check_stack();
+	
+	check_chip8({PC: 0x206, VA: 0xAF, V0: 0x54});
+	
+	//Cas Vx = kk
+
+	init_chip8();
+
+	load_custom_ROM([0x6AAF, 0x3AAF, 0x6054, 0x6345]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+	
+	check_chip8({PC: 0x208, VA: 0xAF, V3: 0x45});
+	
 
 });
 
 test("OpCode 4xkk - SNE Vx, byte", function() {
 
+	//Cas Vx != kk
+
 	init_chip8();
 
-	register.V[0xB] = 0xF5;
+	load_custom_ROM([0x6AAF, 0x4AAA, 0x6054, 0x6345]);
 
-	PC += 0x2;
-	Op4xkk_sne(0xB, 0x24);
+	process_n_opcodes(3);
 
-	equal(PC, 0x204, "Program Counter OK");
+	check_stack();
+	
+	check_chip8({PC: 0x208, VA: 0xAF, V3: 0x45});
+	
+	//Cas Vx = kk
 
+	init_chip8();
+
+	load_custom_ROM([0x6AAF, 0x4AAF, 0x6054, 0x6345]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+	
+	check_chip8({PC: 0x206, VA: 0xAF, V0: 0x54});
 });
 
 test("OpCode 5xy0 - SE Vx, Vy", function() {
 
+	//Cas Vx = Vy
+
 	init_chip8();
 
-	register.V[0xC] = 0x64;
-	register.V[0x3] = 0x64;
+	load_custom_ROM([0x6AAF, 0x6BAF, 0x5AB0, 0x6054, 0x6345]);
 
-	PC += 0x2;
-	Op5xy0_se(0xC, 0x3);
+	process_n_opcodes(4);
 
-	equal(PC, 0x204, "Program Counter OK");
+	check_stack();
+	
+	check_chip8({PC: 0x20A, VA: 0xAF, VB: 0xAF, V3: 0x45});
 
+	//Cas Vx != Vy
+
+	init_chip8();
+
+	load_custom_ROM([0x6AAF, 0x6B0F, 0x5AB0, 0x6054, 0x6345]);
+
+	process_n_opcodes(4);
+
+	check_stack();
+	
+	check_chip8({PC: 0x208, VA: 0xAF, VB: 0x0F, V0: 0x54});
 });
 
 test("OpCode 6xkk - LD Vx, byte", function() {
@@ -148,6 +232,7 @@ test("OpCode 6xkk - LD Vx, byte", function() {
 
 	equal(register.V[0x6], 0x2);
 
+	ok(false);
 });
 
 test("OpCode 7xkk - ADD Vx, byte", function() {
