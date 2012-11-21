@@ -932,14 +932,18 @@ $(function() {
 				mapped_key = 0xF;
 				break;
 		}
-		
-		keyboard[mapped_key] = 1;
-		
-		if (wait_for_keypress) {
-			wait_for_keypress = false;
-			register.V[register_for_keypress] = mapped_key;
-			cpu_process = setTimeout(process_opcode_ex, 1);
-		}	
+	
+		if (mapped_key !== null) {
+
+			keyboard[mapped_key] = 1;
+			
+			if (wait_for_keypress) {
+				wait_for_keypress = false;
+				register.V[register_for_keypress] = mapped_key;
+				cpu_process = setTimeout(process_opcode_ex, 1);
+			}
+
+		}		
 
 	});
 
