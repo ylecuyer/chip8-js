@@ -826,6 +826,17 @@ function process_opcode_ex() {
 
 $(function() {
 
+	$('#screen')
+		.clearCanvas()
+		.drawRect({
+			fillStyle: "black",
+			x: 0,
+			y: 0,
+			width: 256,
+			height: 128,
+			fromCenter: false
+		});
+
 	$("#rom").change(function(eventObject) {
 
 		var file = eventObject.target.files[0];
@@ -921,14 +932,18 @@ $(function() {
 				mapped_key = 0xF;
 				break;
 		}
-		
-		keyboard[mapped_key] = 1;
-		
-		if (wait_for_keypress) {
-			wait_for_keypress = false;
-			register.V[register_for_keypress] = mapped_key;
-			cpu_process = setTimeout(process_opcode_ex, 1);
-		}	
+	
+		if (mapped_key !== null) {
+
+			keyboard[mapped_key] = 1;
+			
+			if (wait_for_keypress) {
+				wait_for_keypress = false;
+				register.V[register_for_keypress] = mapped_key;
+				cpu_process = setTimeout(process_opcode_ex, 1);
+			}
+
+		}		
 
 	});
 
