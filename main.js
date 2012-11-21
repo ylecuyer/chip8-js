@@ -529,7 +529,7 @@ function run() {
 	st_process = setTimeout(decrease_ST, fps60);
 
 	//console.log("PC = 0x" + PC.toString(16));
-	process_opcode_ext();
+	process_opcode_ex();
 	draw();
 
 
@@ -812,10 +812,12 @@ function process_opcode_ex() {
 
 	process_opcode();
 
-	console.log(PC);
-	console.log(SP);
-	console.log(STACK);
-	console.log(register);
+	if (DEBUG) {
+		console.log(PC.toString(16));
+		console.log(SP.toString(16));
+		console.log(STACK);
+		console.log(register);
+	}
 
 	if (wait_for_keypress != true)
 		cpu_process = setTimeout(process_opcode_ex, 1);
