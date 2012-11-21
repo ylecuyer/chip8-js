@@ -10,7 +10,7 @@
 		<script type="text/javascript" charset="utf-8" src="bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="jcanvas.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="main.js"></script>
-
+		<script type="text/javascript" charset="utf-8" src="ui.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -27,16 +27,13 @@
 			
 			<div class="row" style="text-align: center; margin-top: 7px">
 				<div class="btn-group">
-					<button type="button" class="btn"><i class="icon-file"></i></button>
+					<button type="button" id="load_file" class="btn"><i class="icon-file"></i></button>
 					<button type="button" class="btn" disabled="disabled"><i class="icon-play"></i></button>
 					<button type="button" class="btn" disabled="disabled"><i class="icon-pause"></i></button>
-					<button type="button" class="btn" disabled="disabled"><i class="icon-eject"></i></button>
-				</div>	
-			</div>
+					<button type="button" id="stop" class="btn" disabled="disabled"><i class="icon-eject"></i></button>
 
-			<div class="row">
-				<input type="file" name="rom" id="rom" value="" />
-				<button type="button" id="stop">stop</button>
+					<input type="file" name="rom" id="rom" value="" style="display: none"/>
+				</div>	
 			</div>
 
 			<div class="row" style="background-color: #f5f5f5; margin-top: 20px;">
