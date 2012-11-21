@@ -4,18 +4,27 @@
 		<meta charset=utf-8 />
 		<title>Chip8 Emulator</title>
 		
-		<link href="css/bootstrap.min.css" rel="stylesheet" media="screen" />
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
 
 		<script type="text/javascript" charset="utf-8" src="jquery.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="jcanvas.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="main.js"></script>
 
 	</head>
 	<body>
+		<div class="container">
+			<div class="row">
+				<div class="page-header">
+					<h1>Chip8-js <small>A Chip8 emulator written in JavaScript</small></h1>
+				</div>
+			</div>
+			<div class="row">
+				<canvas id="screen" class="thumbnail" style="margin: auto" width="256" height="128" ></canvas>
+			</div>
 
-		<input type="file" name="rom" id="rom" value="" />
-		<button type="button" id="stop">stop</button>
-		<canvas id="screen" width="256" height="128" ></canvas>
+			<input type="file" name="rom" id="rom" value="" />
+			<button type="button" id="stop">stop</button>
+		</div>
 	</body>
 </html>
