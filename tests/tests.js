@@ -227,114 +227,393 @@ test("OpCode 6xkk - LD Vx, byte", function() {
 
 	init_chip8();
 
-	PC += 0x2;
-	Op6xkk_ld(0x6, 0x02);
+	load_custom_ROM([0x6E0A]);
+	
+	process_opcode();
 
-	equal(register.V[0x6], 0x2);
+	check_stack();
 
-	ok(false);
+	check_chip8({PC: 0x202, VE: 0x0A});
 });
 
 test("OpCode 7xkk - ADD Vx, byte", function() {
+
+	//Cas Vx + kk > 255
+	
+	init_chip8();
+
+	load_custom_ROM([0x6A22, 0x7ADF]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0x1});
+
+	//CAs Vx + kk <= 255
+
+	init_chip8();
+
+	load_custom_ROM([0x6A22, 0x7A10]);
+	
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0x32});
+
 
 });
 
 test("OpCode 8xy0 - LD Vx, Vy", function() {
 
+	init_chip8();
+
+	load_custom_ROM([0x6A45, 0x602F, 0x8A00]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x2F, V0: 0x2F});
+
 });
 
 test("OpCode 8xy1 - OR Vx, Vy", function() {
+
+	init_chip8();
+
+	load_custom_ROM([0x6A0F, 0x6BF0, 0x8AB1]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0xFF, VB: 0xF0});
 
 });
 
 test("OpCode 8xy2 - AND Vx, Vy", function() {
 
+	init_chip8();
+
+	load_custom_ROM([0x6A0F, 0x6BF0, 0x8AB2]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x00, VB: 0xF0});
+
 });
 
 test("OpCode 8xy3 - XOR Vx, Vy", function() {
+
+	init_chip8();
+
+	load_custom_ROM([0x6A0F, 0x6BF5, 0x8AB3]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0xFA, VB: 0xF5});
 
 });
 
 test("OpCode 8xy4 - ADD Vx, Vy", function() {
 
+	//Cas Vx + Vy > 255
+	
+	init_chip8();
+
+	load_custom_ROM([0x6ABF, 0x6BF0, 0x8AB4]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0xAF, VB: 0xF0, VF: 0x1});
+
+	//Cas Vx + Vy <= 255
+	
+	init_chip8();
+
+	load_custom_ROM([0x6A0A, 0x6BF0, 0x8AB4]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0xFA, VB: 0xF0});
+
 });
 
 test("OpCode 8xy5 - SUB Vx, Vy", function() {
+
+	//Cas Vx > Vy
+	
+	init_chip8();
+
+	load_custom_ROM([0x6AFA, 0x6BF0, 0x8AB5]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x0A, VB: 0xF0, VF: 0x1});
+
+	//Cas Vx == Vy
+
+	init_chip8();
+
+	load_custom_ROM([0x6AF0, 0x6BF0, 0x8AB5]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x00, VB: 0xF0, VF: 0x0});
+
+	//Cas Vx < Vy
+	
+	init_chip8();
+
+	load_custom_ROM([0x6A0A, 0x6BF0, 0x8AB5]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x1A, VB: 0xF0, VF: 0x0});
 
 });
 
 test("OpCode 8xy6 - SHR Vx {, Vy}", function() {
 
+	//Cas Vx&0x1 == 1
+
+	init_chip8();
+
+	load_custom_ROM([0x6AFF, 0x8A06]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0x7f, VF: 0x1});
+
+	//Cas Vx&0x1 == 0
+
+	init_chip8();
+
+	load_custom_ROM([0x6AFE, 0x8A06]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0x7f, VF: 0x0});
 });
 
 test("OpCode 8xy7 - SUBN Vx, Vy", function() {
+
+	//Cas Vy > Vx
+	
+	init_chip8();
+
+	load_custom_ROM([0x6AF0, 0x6BFA, 0x8AB7]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x0A, VB: 0xFA, VF: 0x1});
+
+	//Cas Vy == Vx
+
+	init_chip8();
+
+	load_custom_ROM([0x6AF0, 0x6BF0, 0x8AB7]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x00, VB: 0xF0, VF: 0x0});
+
+	//Cas Vy < Vx
+	
+	init_chip8();
+
+	load_custom_ROM([0x6AF0, 0x6B0A, 0x8AB7]);
+
+	process_n_opcodes(3);
+
+	check_stack();
+
+	check_chip8({PC: 0x206, VA: 0x1A, VB: 0x0A, VF: 0x0});
 
 });
 
 test("OpCode 8xyE - SHL Vx {, Vy}", function() {
 
+	//Cas Vx&0x80 == 1
+
+	init_chip8();
+
+	load_custom_ROM([0x6AFF, 0x8A0E]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0xFE, VF: 0x1});
+
+	//Cas Vx&0x8 == 0
+
+	init_chip8();
+
+	load_custom_ROM([0x6A7F, 0x8A0E]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0xFE, VF: 0x0});
 });
 
 test("OpCode 9xy0 - SNE Vx, Vy", function() {
+
+	ok(false); //TODO Not now...
 
 });
 
 test("OpCode Annn - LD I, addr", function() {
 
+	init_chip8();
+
+	load_custom_ROM([0xAABC]);
+
+	process_opcode();
+
+	check_stack();
+
+	check_chip8({PC: 0x202, I: 0xABC});
+
 });
 
 test("OpCode Bnnn - JP V0, addr", function() {
 
+	init_chip8();
+
+	load_custom_ROM([0x600F, 0xB222]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x231, V0: 0x0F});
 });
 
 test("OpCode Cxkk - RND Vx, byte", function() {
+
+	ok(false); //TODO Can't be tested...
 
 });
 
 test("OpCode Dxyn - DRW Vx, Vy, nibble", function() {
 
+	ok(false); //TODO Not now...
+
 });
 
 test("OpCode Ex9E - SKP Vx", function() {
+
+	ok(false); //TODO Not now...
 
 });
 
 test("OpCode ExA1 - SKNP Vx", function() {
 
+	ok(false); //TODO Not now...
+
 });
 
 test("OpCode Fx07 - LD Vx, DT", function() {
+
+	
 
 });
 
 test("OpCode Fx0A - LD Vx, K", function() {
 
+	ok(false); //TODO Not now...
+
 });
 
 test("OpCode Fx15 - LD DT, Vx", function() {
+
+	init_chip8();
+
+	load_custom_ROM([0x6ABF, 0xFA15]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0xBF, DT: 0xBF});
 
 });
 
 test("OpCode Fx18 - LD ST, Vx", function() {
 
+	init_chip8();
+
+	load_custom_ROM([0x6ABF, 0xFA18]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0xBF, ST: 0xBF});
 });
 
 test("OpCode Fx1E - ADD I, Vx", function() {
+
+	ok(false); //TODO (2 cases I + Vx overflows 12bits and the other one)	
 
 });
 
 test("OpCode Fx29 - LD F, Vx", function() {
 
+	//Only 3 is tested
+	init_chip8();
+
+	load_custom_ROM([0x6A03, 0xFA29]);
+
+	process_n_opcodes(2);
+
+	check_stack();
+
+	check_chip8({PC: 0x204, VA: 0x3, I: 0x00F});
+
 });
 
 test("OpCode Fx33 - LD B, Vx", function() {
+
+	ok(false); //TODO Not now...
 
 });
 
 test("OpCode Fx55 - LD [I], Vx", function() {
 
+	ok(false); //TODO Not now...
+
 });
 
 test("OpCode Fx65 - Vx, [I]", function() {
+
+	ok(false); //TODO Not now...
 
 });
