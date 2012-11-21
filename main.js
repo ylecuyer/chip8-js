@@ -235,7 +235,7 @@ function Op6xkk_ld(Vx, kk) {
 function Op7xkk_add(Vx, kk) {
 	if (DEBUG)
 		console.log("Op7xkk_add(V" + Vx.toString(16) + ", " + kk.toString(16) + ")");
-	register.V[Vx] += kk;//TODO check carry
+	register.V[Vx] = (register.V[Vx] + kk) & 0xFF;//No carry generated
 }
 
 function Op8xy0_ld(Vx, Vy) {
@@ -274,7 +274,7 @@ function Op8xy5_sub(Vx, Vy) {
 	if (DEBUG)
 		console.log("Op8xy5_sub(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[0xF] = (register.V[Vx] > register.V[Vy])?1:0;
-	register.V[Vx] = (register.V[Vx] - register.V[Vy]);//TODO check if & 0xFF is needed
+	register.V[Vx] = (register.V[Vx] - register.V[Vy])&0xFF;//TODO verify if & 0xFF is needed
 }
 
 function Op8xy6_shr(Vx, Vy) {
@@ -288,14 +288,14 @@ function Op8xy7_subn(Vx, Vy) {
 	if (DEBUG)
 		console.log("Op8xy7_subn(V" + Vx.toString(16) + ", V" + Vy.toString(16) + ")");
 	register.V[0xF] = (register.V[Vy] > register.V[Vx])?1:0;
-	register.V[Vx] = (register.V[Vy] - register.V[Vx]);//TODO check if & 0xFF is needed
+	register.V[Vx] = (register.V[Vy] - register.V[Vx])&0xFF;//TODO verify if & 0xFF is needed
 }
 
 function Op8xyE_shl(Vx, Vy) {
 	if (DEBUG)
 		console.log("Op8xy6_shr(V" + Vx.toString(16) + "{, V" + Vy.toString(16) + "})");
-	register.V[0xF] = register.V[Vx] & 0x80;
-	register.V[Vx] <<= 1;//TODO check why Vy is not used
+	register.V[0xF] = (register.V[Vx] & 0x80) >> 7;
+	register.V[Vx] = (register.V[Vx] << 1)&0xFF;//TODO check why Vy is not used
 }
 
 function Op9xy0_sne(Vx, Vy) {
@@ -314,7 +314,7 @@ function OpAnnn_ld(addr) {
 function OpBnnn_jp(addr) {
 	if (DEBUG)
 		console.log("OpBnnn_jp(" + addr.toString(16) + ")");
-	PC += (addr + register.V[0]);
+	PC = (addr + register.V[0]);
 }
 
 function OpCxkk_rnd(Vx, kk) {
@@ -389,7 +389,7 @@ function OpFx18_ld(Vx) {
 function OpFx1E_add(Vx) {
 	if (DEBUG)
 		console.log("OpFx1E_add(V" + Vx.toString(16) + ")");
-	register.I += register.V[Vx];//TODO check carry
+	register.I += register.V[Vx];//TODO check carry //TODO check if 0xFFF is needed (I seems to be a 12bit register)
 }
 
 function OpFx29_ld(Vx) {
