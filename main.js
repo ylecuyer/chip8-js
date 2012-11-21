@@ -824,6 +824,17 @@ function process_opcode_ex() {
 
 $(function() {
 
+	$('#screen')
+		.clearCanvas()
+		.drawRect({
+			fillStyle: "black",
+			x: 0,
+			y: 0,
+			width: 256,
+			height: 128,
+			fromCenter: false
+		});
+
 	$("#rom").change(function(eventObject) {
 
 		var file = eventObject.target.files[0];
