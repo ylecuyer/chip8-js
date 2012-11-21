@@ -529,7 +529,7 @@ function run() {
 	st_process = setTimeout(decrease_ST, fps60);
 
 	//console.log("PC = 0x" + PC.toString(16));
-	process_opcode_ext();
+	process_opcode_ex();
 	draw();
 
 
