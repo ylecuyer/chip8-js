@@ -811,11 +811,13 @@ function process_opcode() {
 function process_opcode_ex() {
 
 	process_opcode();
-
-	console.log(PC);
-	console.log(SP);
-	console.log(STACK);
-	console.log(register);
+	
+	if (DEBUG) {
+		console.log(PC);
+		console.log(SP);
+		console.log(STACK);
+		console.log(register);
+	}
 
 	if (wait_for_keypress != true)
 		cpu_process = setTimeout(process_opcode_ex, 1);
