@@ -27,7 +27,8 @@ $(function() {
 	$("#rom").change(function(eventObject) {
 
 		var file = eventObject.target.files[0];
-
+		var file_name = eventObject.target.value.split(/(\\|\/)/g).pop();
+	
 		var reader = new FileReader();
 
 		reader.onload = function() {
@@ -43,7 +44,8 @@ $(function() {
 			chip8_load_rom_into_mem(ROM);
 		
 			set_controls(false, true, false, false, true);
-		
+
+			$("#game").html(file_name);
 		};
 
 		reader.readAsArrayBuffer(file);
@@ -96,6 +98,8 @@ $(function() {
 		clear_screen();	
 
 		set_controls(true, false, false, false, false);
+
+		$("#game").html("");
 	});
 	
 	$(document).keydown(function(event) {

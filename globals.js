@@ -38,3 +38,5 @@ var screen = null;
 
 var cpu_process = null;
 var draw_process = null;
+var dt_process = null;
+var st_process = null;
