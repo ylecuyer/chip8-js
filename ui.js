@@ -1,12 +1,4 @@
-$(function() {
-
-	$("#load_file").click(function() {
-
-		$("#rom").trigger("click");
-			
-	});
-
-	screen = $('#screen');
+function clear_screen() {
 
 	screen
 		.clearCanvas()
@@ -18,6 +10,19 @@ $(function() {
 			height: 128,
 			fromCenter: false
 		});
+}
+
+$(function() {
+
+	$("#load_file").click(function() {
+
+		$("#rom").trigger("click");
+			
+	});
+
+	screen = $('#screen');
+
+	clear_screen();
 
 	$("#rom").change(function(eventObject) {
 
@@ -36,19 +41,61 @@ $(function() {
 			chip8_init_keyboard();
 
 			chip8_load_rom_into_mem(ROM);
-			
-			chip8_run();
+		
+			set_controls(false, true, false, false, true);
+		
 		};
 
 		reader.readAsArrayBuffer(file);
 	});	
 
+	$("#run").click(function() {
+
+		chip8_run();
+
+		set_controls(false, false, true, true, true);
+
+	});
+
+	$("#pause").click(function() {
+
+		cpu_process && clearTimeout(cpu_process);
+		draw_process && clearTimeout(draw_process);
+		dt_process && clearTimeout(dt_process);
+		st_process && clearTimeout(st_process);
+		
+		set_controls(false, true, false, true, true);
+	});
+
+	$("#reset").click(function() {
+
+			chip8_init_mem();			
+			chip8_init_cpu();
+			chip8_init_display();
+			chip8_init_keyboard();
+
+			chip8_load_rom_into_mem(ROM);
+
+			chip8_run();
+	
+			set_controls(false, false, true, true, true);
+	});
+
 	$("#stop").click(function() {
 
-		clearTimeout(cpu_process);
-		clearTimeout(draw_process);
-		clearTimeout(dt_process);
-		clearTimeout(st_process);
+		cpu_process && clearTimeout(cpu_process);
+		draw_process && clearTimeout(draw_process);
+		dt_process && clearTimeout(dt_process);
+		st_process && clearTimeout(st_process);
+
+		chip8_init_mem();
+		chip8_init_cpu();
+		chip8_init_display();
+		chip8_init_keyboard();
+
+		clear_screen();	
+
+		set_controls(true, false, false, false, false);
 	});
 	
 	$(document).keydown(function(event) {

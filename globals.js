@@ -1,5 +1,8 @@
 var DEBUG = false;
 
+var ROM_buffer = null;
+var ROM = null;
+
 var MEM_buffer = new ArrayBuffer(4096);
 var MEM = new Uint8Array(MEM_buffer);
 
