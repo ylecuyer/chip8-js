@@ -1,33 +1,3 @@
-var DEBUG = false;
-
-var MEM_buffer = new ArrayBuffer(4096);
-var MEM = new Uint8Array(MEM_buffer);
-
-var keyboard = new Array(16);
-
-var wait_for_keypress =  false;
-var register_for_keypress = null;
-
-var register = {
-
-	DT: 0, //delay timer
-	ST: 0, //sound timer
-
-	I:  0,
-
-	V: new Array(16)
-}
-
-var PC = 0;
-var SP = 0;
-
-var STACK_buffer = new ArrayBuffer(32);
-var STACK = new Uint16Array(STACK_buffer);
-
-var display = new Array(2048);
-
-var fps60 = Math.floor(1000/60);
-
 function decrease_DT() {
 	if (register.DT > 0)
 		register.DT--;
@@ -43,7 +13,6 @@ function decrease_ST() {
 	setTimeout(decrease_ST, fps60);
 }
 
-var OpCode = 0x0000;
 
 function Op0nnn_sys(addr) {
 	if (DEBUG)
@@ -57,7 +26,7 @@ function Op00E0_cls() {
 	if (DEBUG)
 		console.log("Op00E0_cls()");
 	for (var i = 0; i < 64*32; i++) 
-		display[i] = 0; //TODO check if it its really 0		
+		display[i] = 0;		
 }
 
 function Op00EE_ret() {
@@ -298,139 +267,7 @@ function OpFx65_ld(Vx) {
 		register.V[i] = MEM[register.I + i];
 }
 
-var stop = false;
-var screen = null;
 
-function init_chip8() {
-
-	if (DEBUG)
-		console.log("Init chip8");
-
-	PC = 0x200; //Chip8 programs begin at 0x200
-	
-	SP = 0xF; //Stack pointer at the top of the stack
-	
-	//Clear Screen
-	for (var i = 0; i < 64; i++) {
-		for (var j = 0; j < 32; j++) {
-			display[i + j*64] = 0;
-		}
-	}
-
-	//Clear Memory
-	//for (var i = 0; i <= 0xFFF; i++)
-	//	MEM[i] = 0;
-
-
-	//Clear registers
-	for (i = 0; i <= 0xF; i++)
-		register.V[i] = 0;
-	register.I  = 0;
-	register.DT = 0;
-	register.ST = 0;
-
-
-	//Clear STACK
-	for (i = 0; i <= 0xF; i++)
-		STACK[i] = 0;
-
-	//Clear keyboard
-	for (i = 0; i <= 0xF; i++)
-		keyboard[i] = 0;
-}
-
-function init() {
-
-	screen = $("#screen");
-
-	screen
-		.clearCanvas()
-		.drawRect({
-			fillStyle: "black",
-			x: 0,
-			y: 0,
-			width: 256,
-			height: 128,
-			fromCenter: false
-		});
-	
-
-	
-	init_chip8();
-
-	//Copy ROM inside the memory
-	//for (var i = 0; i < ROM_buffer.byteLength; i += 0x1) {
-	//	MEM[i + 0x200] = ROM[i];
-	//}
-	
-
-	/*
-	//CUSTOM ROM
-
-	//0x6302 - Set 2 into V3
-	MEM[0x200] = 0x63;
-	MEM[0x201] = 0x02;
-
-	//0xF329 - Points I to sprite 2
-	MEM[0x202] = 0xF3;
-	MEM[0x203] = 0x29;
-
-	//0x6000 - Set V0 (x) to 0
-	MEM[0x204] = 0x60;
-	MEM[0x205] = 0x00;
-
-	//0x6100 - Set V1 (y) to 0
-	MEM[0x206] = 0x61;
-	MEM[0x207] = 0x00;
-
-	//OxD015 - Draw 5 lines from I
-	MEM[0x208] = 0xD0;
-	MEM[0x209] = 0x15;
-
-	//0x120A - Infinite loop
-	MEM[0x20A] = 0x12;
-	MEM[0x20B] = 0x0A;
-	*/
-
-	run();
-}
-
-var cpu_process = null;
-var draw_process = null;
-
-function run() {
-		
-	dt_process = setTimeout(decrease_DT, fps60);
-	st_process = setTimeout(decrease_ST, fps60);
-
-	//console.log("PC = 0x" + PC.toString(16));
-	process_opcode_ex();
-	draw();
-
-
-}
-
-function draw() {
-
-	for (var i = 0; i < 64; i++) {
-		for (var j = 0; j < 32; j++) {
-
-			screen	
-				.drawRect({
-					fillStyle: (display[i + j*64])?"white":"black",
-					x: i*4,
-					y: j*4,
-					width: 4,
-					height: 4,
-					fromCenter: false
-				});
-
-		}
-	}
-
-	draw_process = setTimeout(draw, fps60);
-
-}
 
 function process_opcode() {
 

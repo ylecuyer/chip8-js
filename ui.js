@@ -6,8 +6,9 @@ $(function() {
 			
 	});
 
+	screen = $('#screen');
 
-	$('#screen')
+	screen
 		.clearCanvas()
 		.drawRect({
 			fillStyle: "black",
@@ -28,10 +29,15 @@ $(function() {
 
 			ROM_buffer = this.result;
 			ROM = new Uint8Array(ROM_buffer);
-			
+
+			chip8_init_mem();			
+			chip8_init_cpu();
+			chip8_init_display();
+			chip8_init_keyboard();
+
 			chip8_load_rom_into_mem(ROM);
 			
-			init();
+			chip8_run();
 		};
 
 		reader.readAsArrayBuffer(file);
@@ -240,4 +246,25 @@ function on_rom_removed() {
 	
 	set_controls(true, false, false, false, false);
 
+}
+
+function draw() {
+
+	for (var i = 0; i < 64; i++) {
+		for (var j = 0; j < 32; j++) {
+
+			screen	
+				.drawRect({
+					fillStyle: (display[i + j*64])?"white":"black",
+					x: i*4,
+					y: j*4,
+					width: 4,
+					height: 4,
+					fromCenter: false
+				});
+
+		}
+	}
+
+	draw_process = setTimeout(draw, fps60);
 }

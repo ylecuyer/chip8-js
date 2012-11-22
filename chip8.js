@@ -163,3 +163,12 @@ function chip8_init_mem() {
 	for (var i = 0x050; i <= 0xFFF; i++)
 		MEM[i] = 0x0;
 }
+
+function chip8_run() {
+
+	dt_process = setTimeout(decrease_DT, fps60);
+	st_process = setTimeout(decrease_ST, fps60);
+
+	process_opcode_ex();
+	draw();
+}
