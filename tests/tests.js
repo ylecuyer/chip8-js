@@ -65,8 +65,8 @@ function check_chip8(to_be_checked) {
 }
 
 test("Chip8 initialization", function() {
-
-	init_chip8();
+	
+	chip8_init_all();
 
 	check_stack();
 
@@ -77,7 +77,7 @@ test("Chip8 initialization", function() {
 
 test("OpCode 00E0 - CLS", function() {
 
-	init_chip8();
+	chip8_init_all();
 	
 	//Fill screen with pixels
 	for (var i = 0; i < 64*32; i++)
@@ -102,7 +102,7 @@ test("OpCode 00E0 - CLS", function() {
 
 test("OpCode 00EE - RET", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x2206, 0x6A34, 0x6345, 0x6321, 0x00EE]);
 	
@@ -115,7 +115,7 @@ test("OpCode 00EE - RET", function() {
 
 test("OpCode 1nnn - JP addr", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x1204, 0x6A34, 0x6345, 0x6A21, 0x00E0]);
 
@@ -129,7 +129,7 @@ test("OpCode 1nnn - JP addr", function() {
 
 test("OpCode 2nnn - CALL addr", function() {
 
-	init_chip8();
+	chip8_init_all();
 	
 	load_custom_ROM([0x2204, 0x6A34, 0x6345, 0x6321, 0x00EE]);
 	
@@ -144,7 +144,7 @@ test("OpCode 3xkk - SE Vx, byte", function() {
 
 	//Cas Vx != kk
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x3AAA, 0x6054, 0x6345]);
 
@@ -156,7 +156,7 @@ test("OpCode 3xkk - SE Vx, byte", function() {
 	
 	//Cas Vx = kk
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x3AAF, 0x6054, 0x6345]);
 
@@ -173,7 +173,7 @@ test("OpCode 4xkk - SNE Vx, byte", function() {
 
 	//Cas Vx != kk
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x4AAA, 0x6054, 0x6345]);
 
@@ -185,7 +185,7 @@ test("OpCode 4xkk - SNE Vx, byte", function() {
 	
 	//Cas Vx = kk
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x4AAF, 0x6054, 0x6345]);
 
@@ -200,7 +200,7 @@ test("OpCode 5xy0 - SE Vx, Vy", function() {
 
 	//Cas Vx = Vy
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x6BAF, 0x5AB0, 0x6054, 0x6345]);
 
@@ -212,7 +212,7 @@ test("OpCode 5xy0 - SE Vx, Vy", function() {
 
 	//Cas Vx != Vy
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AAF, 0x6B0F, 0x5AB0, 0x6054, 0x6345]);
 
@@ -225,7 +225,7 @@ test("OpCode 5xy0 - SE Vx, Vy", function() {
 
 test("OpCode 6xkk - LD Vx, byte", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6E0A]);
 	
@@ -240,7 +240,7 @@ test("OpCode 7xkk - ADD Vx, byte", function() {
 
 	//Cas Vx + kk > 255
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A22, 0x7ADF]);
 
@@ -252,7 +252,7 @@ test("OpCode 7xkk - ADD Vx, byte", function() {
 
 	//CAs Vx + kk <= 255
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A22, 0x7A10]);
 	
@@ -267,7 +267,7 @@ test("OpCode 7xkk - ADD Vx, byte", function() {
 
 test("OpCode 8xy0 - LD Vx, Vy", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A45, 0x602F, 0x8A00]);
 
@@ -281,7 +281,7 @@ test("OpCode 8xy0 - LD Vx, Vy", function() {
 
 test("OpCode 8xy1 - OR Vx, Vy", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A0F, 0x6BF0, 0x8AB1]);
 
@@ -295,7 +295,7 @@ test("OpCode 8xy1 - OR Vx, Vy", function() {
 
 test("OpCode 8xy2 - AND Vx, Vy", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A0F, 0x6BF0, 0x8AB2]);
 
@@ -309,7 +309,7 @@ test("OpCode 8xy2 - AND Vx, Vy", function() {
 
 test("OpCode 8xy3 - XOR Vx, Vy", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A0F, 0x6BF5, 0x8AB3]);
 
@@ -325,7 +325,7 @@ test("OpCode 8xy4 - ADD Vx, Vy", function() {
 
 	//Cas Vx + Vy > 255
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6ABF, 0x6BF0, 0x8AB4]);
 
@@ -337,7 +337,7 @@ test("OpCode 8xy4 - ADD Vx, Vy", function() {
 
 	//Cas Vx + Vy <= 255
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A0A, 0x6BF0, 0x8AB4]);
 
@@ -353,7 +353,7 @@ test("OpCode 8xy5 - SUB Vx, Vy", function() {
 
 	//Cas Vx > Vy
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AFA, 0x6BF0, 0x8AB5]);
 
@@ -365,7 +365,7 @@ test("OpCode 8xy5 - SUB Vx, Vy", function() {
 
 	//Cas Vx == Vy
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AF0, 0x6BF0, 0x8AB5]);
 
@@ -377,7 +377,7 @@ test("OpCode 8xy5 - SUB Vx, Vy", function() {
 
 	//Cas Vx < Vy
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A0A, 0x6BF0, 0x8AB5]);
 
@@ -393,7 +393,7 @@ test("OpCode 8xy6 - SHR Vx {, Vy}", function() {
 
 	//Cas Vx&0x1 == 1
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AFF, 0x8A06]);
 
@@ -405,7 +405,7 @@ test("OpCode 8xy6 - SHR Vx {, Vy}", function() {
 
 	//Cas Vx&0x1 == 0
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AFE, 0x8A06]);
 
@@ -420,7 +420,7 @@ test("OpCode 8xy7 - SUBN Vx, Vy", function() {
 
 	//Cas Vy > Vx
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AF0, 0x6BFA, 0x8AB7]);
 
@@ -432,7 +432,7 @@ test("OpCode 8xy7 - SUBN Vx, Vy", function() {
 
 	//Cas Vy == Vx
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AF0, 0x6BF0, 0x8AB7]);
 
@@ -444,7 +444,7 @@ test("OpCode 8xy7 - SUBN Vx, Vy", function() {
 
 	//Cas Vy < Vx
 	
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AF0, 0x6B0A, 0x8AB7]);
 
@@ -460,7 +460,7 @@ test("OpCode 8xyE - SHL Vx {, Vy}", function() {
 
 	//Cas Vx&0x80 == 1
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6AFF, 0x8A0E]);
 
@@ -472,7 +472,7 @@ test("OpCode 8xyE - SHL Vx {, Vy}", function() {
 
 	//Cas Vx&0x8 == 0
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A7F, 0x8A0E]);
 
@@ -491,7 +491,7 @@ test("OpCode 9xy0 - SNE Vx, Vy", function() {
 
 test("OpCode Annn - LD I, addr", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0xAABC]);
 
@@ -505,7 +505,7 @@ test("OpCode Annn - LD I, addr", function() {
 
 test("OpCode Bnnn - JP V0, addr", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x600F, 0xB222]);
 
@@ -554,7 +554,7 @@ test("OpCode Fx0A - LD Vx, K", function() {
 
 test("OpCode Fx15 - LD DT, Vx", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6ABF, 0xFA15]);
 
@@ -568,7 +568,7 @@ test("OpCode Fx15 - LD DT, Vx", function() {
 
 test("OpCode Fx18 - LD ST, Vx", function() {
 
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6ABF, 0xFA18]);
 
@@ -588,7 +588,7 @@ test("OpCode Fx1E - ADD I, Vx", function() {
 test("OpCode Fx29 - LD F, Vx", function() {
 
 	//Only 3 is tested
-	init_chip8();
+	chip8_init_all();
 
 	load_custom_ROM([0x6A03, 0xFA29]);
 

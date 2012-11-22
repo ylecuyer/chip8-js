@@ -1,3 +1,12 @@
+function chip8_init_all() {
+	
+	chip8_init_cpu();
+	chip8_init_mem();
+	chip8_init_keyboard();
+	chip8_init_display();
+
+}
+
 function chip8_init_cpu() {
 
 	register.DT = 0;
