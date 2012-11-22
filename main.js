@@ -7,8 +7,19 @@ function decrease_DT() {
 
 function decrease_ST() {
 	
-	if (register.ST > 0)
+	if (register.ST > 0) {
+
 		register.ST--;
+	
+		if (!buzzer_active) 
+			start_buzzer();
+		
+	}
+	else {
+
+		if (buzzer_active)
+			stop_buzzer();
+	}
 
 	setTimeout(decrease_ST, fps60);
 }
