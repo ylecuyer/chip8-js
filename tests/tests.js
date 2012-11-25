@@ -485,7 +485,30 @@ test("OpCode 8xyE - SHL Vx {, Vy}", function() {
 
 test("OpCode 9xy0 - SNE Vx, Vy", function() {
 
-	ok(false); //TODO Not now...
+	//Cas Vx == Vy
+
+	chip8_init_all();
+
+	load_custom_ROM([0x6A7F, 0x6B7F, 0x9AB0, 0x6AFF, 0x6A0E]);
+
+	process_n_opcodes(4);
+
+	check_stack();
+
+	check_chip8({PC: 0x208, VA: 0xFF, VB: 0x7F});
+	
+
+	//Cas Vx != Vy
+
+	chip8_init_all();
+
+	load_custom_ROM([0x6A7F, 0x6BFF, 0x9AB0, 0x6AFF, 0x6A0E]);
+
+	process_n_opcodes(4);
+
+	check_stack();
+
+	check_chip8({PC: 0x20A, VA: 0x0E, VB: 0xFF});
 
 });
 
